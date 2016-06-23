@@ -1,0 +1,252 @@
+    body {
+        /*direction: rtl;*/
+    }
+    
+    .microEditor {
+        position: relative;
+    }
+    
+    .microEditor .editor {
+        /*background-color: #eee;*/
+        outline: none;
+        border: 1px solid #bbb;
+        border-radius: 2px;
+        padding: 5px;
+        transition: all .5s;
+    }
+    
+    .editor:hover,
+    .editor:focus {
+        background-color: #fafafa;
+    }
+    
+    .microEditor .button-container {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .microEditor .button-container>.dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 70px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        border: 1px solid #eee;
+        /*z-index: 1;*/
+    }
+    
+    .microEditor .button-container>.show {
+        display: block;
+    }
+    
+    .microEditor .button-container>.dropdown-content a {
+        color: black;
+        padding: 6px 10px;
+        text-decoration: none;
+        display: block;
+        font: 11px tahoma;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    
+    .microEditor .button-container>.dropdown-content a:hover {
+        background-color: #900;
+        color: white;
+    }
+    
+    .microEditor button {
+        background-color: transparent;
+        border: 1px solid transparent;
+        outline: none;
+        border-radius: 5px;
+        padding: 5px 7px;
+        /*color: #700;*/
+        margin-bottom: 2px;
+        cursor: pointer;
+        transition: all .5s;
+    }
+    
+    .microEditor button:hover {
+        border-top-color: #ccc;
+        border-bottom-color: #ccc;
+        background-color: #fafafa;
+    }
+    
+    .microEditor button.highlight {
+        background-color: #eee;
+    }
+    
+    .microEditor button[disabled],
+    .microEditor button.highlight[disabled] {
+        color: #aaa;
+        background-color: transparent;
+        cursor: default;
+        border-color: transparent;
+    }
+    
+    .onfocus button {
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    
+    .focused button {
+        opacity: 1;
+    }
+    
+
+    .onfocus .button-container:nth-child(2) button {
+        transition-delay: 10ms;
+    }
+    
+    .onfocus .button-container:nth-child(3) button {
+        transition-delay: 20ms;
+    }
+    
+    .onfocus .button-container:nth-child(4) button {
+        transition-delay: 40ms;
+    }
+    
+    .onfocus .button-container:nth-child(5) button {
+        transition-delay: 60ms;
+    }
+    
+    .onfocus .button-container:nth-child(6) button {
+        transition-delay: 80ms;
+    }
+    
+    .onfocus .button-container:nth-child(7) button {
+        transition-delay: 100ms;
+    }
+    
+    .onfocus .button-container:nth-child(8) button {
+        transition-delay: 120ms;
+    }
+    
+    .onfocus .button-container:nth-child(9) button {
+        transition-delay: 140ms;
+    }
+    
+    .onfocus .button-container:nth-child(10) button {
+        transition-delay: 160ms;
+    }
+    
+    .onfocus .button-container:nth-child(11) button {
+        transition-delay: 180ms;
+    }
+    
+    .onfocus .button-container:nth-child(12) button {
+        transition-delay: 200ms;
+    }
+    
+    .onfocus .button-container:nth-child(13) button {
+        transition-delay: 220ms;
+    }
+    
+    .onfocus .button-container:nth-child(14) button {
+        transition-delay: 240ms;
+    }
+    
+    .onfocus .button-container:nth-child(15) button {
+        transition-delay: 260ms;
+    }
+    
+    .onfocus .button-container:nth-child(16) button {
+        transition-delay: 280ms;
+    }
+    
+    .onfocus .button-container:nth-child(17) button {
+        transition-delay: 300ms;
+    }
+    
+    .onfocus .button-container:nth-child(18) button {
+        transition-delay: 320ms;
+    }
+    
+    .onfocus .button-container:nth-child(19) button {
+        transition-delay: 340ms;
+    }
+    
+    .onfocus .button-container:nth-child(20) button {
+        transition-delay: 360ms;
+    }
+    
+    .onfocus .button-container:nth-child(21) button {
+        transition-delay: 380ms;
+    }
+    
+    .onfocus .button-container:nth-child(22) button {
+        transition-delay: 400ms;
+    }
+    
+    .onfocus .button-container:nth-child(23) button {
+        transition-delay: 420ms;
+    }
+    
+    .onfocus .button-container:nth-child(24) button {
+        transition-delay: 440ms;
+    }
+    
+    .onfocus .button-container:nth-child(25) button {
+        transition-delay: 460ms;
+    }
+    
+    .onfocus .button-container:nth-child(26) button {
+        transition-delay: 480ms;
+    }
+    
+    .onfocus .button-container:nth-child(27) button {
+        transition-delay: 500ms;
+    }
+    
+    .onfocus .button-container:nth-child(28) button {
+        transition-delay: 520ms;
+    }
+    
+    .onfocus .button-container:nth-child(29) button {
+        transition-delay: 540ms;
+    }
+    
+    .onfocus .button-container:nth-child(30) button {
+        transition-delay: 560ms;
+    }
+    
+    .onfocus .button-container:nth-child(31) button {
+        transition-delay: 580ms;
+    }
+    
+    .onfocus .button-container:nth-child(32) button {
+        transition-delay: 600ms;
+    }
+    
+    .onfocus .button-container:nth-child(33) button {
+        transition-delay: 620ms;
+    }
+    
+    .onfocus .button-container:nth-child(34) button {
+        transition-delay: 640ms;
+    }
+    
+    .onfocus .button-container:nth-child(35) button {
+        transition-delay: 660ms;
+    }
+    
+    .onfocus .button-container:nth-child(36) button {
+        transition-delay: 680ms;
+    }
+    
+    .onfocus .button-container:nth-child(37) button {
+        transition-delay: 700ms;
+    }
+    
+    .onfocus .button-container:nth-child(38) button {
+        transition-delay: 720ms;
+    }
+    
+    .onfocus .button-container:nth-child(39) button {
+        transition-delay: 740ms;
+    }
+    
+    .onfocus .button-container:nth-child(40) button {
+        transition-delay: 760ms;
+    }

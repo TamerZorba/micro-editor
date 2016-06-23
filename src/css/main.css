@@ -1,0 +1,96 @@
+    body {
+        /*direction: rtl;*/
+    }
+    
+    .microEditor {
+        position: relative;
+    }
+    
+    .microEditor .editor {
+        /*background-color: #eee;*/
+        outline: none;
+        border: 1px solid #bbb;
+        border-radius: 2px;
+        padding: 5px;
+        transition: all .5s;
+    }
+    
+    .editor:hover,
+    .editor:focus {
+        background-color: #fafafa;
+    }
+    
+    .microEditor .button-container {
+        display: inline-block;
+        position: relative;
+    }
+    
+    .microEditor .button-container>.dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 70px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        border: 1px solid #eee;
+        /*z-index: 1;*/
+    }
+    
+    .microEditor .button-container>.show {
+        display: block;
+    }
+    
+    .microEditor .button-container>.dropdown-content a {
+        color: black;
+        padding: 6px 10px;
+        text-decoration: none;
+        display: block;
+        font: 11px tahoma;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+    
+    .microEditor .button-container>.dropdown-content a:hover {
+        background-color: #900;
+        color: white;
+    }
+    
+    .microEditor button {
+        background-color: transparent;
+        border: 1px solid transparent;
+        outline: none;
+        border-radius: 5px;
+        padding: 5px 7px;
+        /*color: #700;*/
+        margin-bottom: 2px;
+        cursor: pointer;
+        transition: all .5s;
+    }
+    
+    .microEditor button:hover {
+        border-top-color: #ccc;
+        border-bottom-color: #ccc;
+        background-color: #fafafa;
+    }
+    
+    .microEditor button.highlight {
+        background-color: #eee;
+    }
+    
+    .microEditor button[disabled],
+    .microEditor button.highlight[disabled] {
+        color: #aaa;
+        background-color: transparent;
+        cursor: default;
+        border-color: transparent;
+    }
+    
+    .onfocus button {
+        opacity: 0;
+        transition: opacity .5s;
+    }
+    
+    .focused button {
+        opacity: 1;
+    }
+    
