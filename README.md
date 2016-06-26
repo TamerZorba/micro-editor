@@ -15,7 +15,7 @@ look inside `example` folder
 
 ###Vendor Plugins
 
-if you need to use any `vendor` based plugin you need to initializa the submodules by entering root folder of the project then run those commands `git submodule init` `git submodule update`, or you can download them from the original vendor repo, you can browse on github.
+if you need to use any `vendor` based plugin you need to initialize the submodules by entering root folder of the project then run those commands `git submodule init` then `git submodule update`, or you can download them from the original vendor repo, you can explore on github.
 
 
 ## License
