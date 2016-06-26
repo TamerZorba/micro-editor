@@ -22,6 +22,7 @@ var microEditor = function (el) {
     position: 'top', // toolbar position
     height: 100, // editor height
     debounce: 10, // time to thread update textarea content
+    init: null
   }
 
   /**
@@ -75,6 +76,11 @@ var microEditor = function (el) {
 
     if (this.options.position != 'top') {
       editor.render()
+    }
+
+    // init
+    if(this.options.init){
+      this.options.init.call(this);
     }
 
     // plugins init
