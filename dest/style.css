@@ -123,7 +123,7 @@
         left: 0;
         top: 100%;
         white-space: nowrap;
-        z-index: 20px;
+        z-index: 20;
         background-color: transparent;
         color: transparent;
         border-radius:3px;
