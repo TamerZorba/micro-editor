@@ -1,0 +1,3 @@
+[submodule "vendor/color/jscolor"]
+	path = vendor/color/jscolor
+	url = https://github.com/EastDesire/jscolor.git

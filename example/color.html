@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>microEditor</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../dest/style.min.css">
+        <script src="../dest/micro-editor.min.js"></script>
+        <!-- all you need just to include the plugin file -->
+        <script src="../vendor/color/color.plugin.js"></script>
+        <script>
+        /**
+         * init
+         */
+        window.onload = function() {
+            editor = new microEditor({
+                el: "editor",
+                // toolbar: "bold",
+                expandable: true,
+                // debugMode: true,
+                // position: "bottom",
+                // showOnFocus: true,
+                pasteAsPlain: true,
+                // height:300,
+                recolan: "ar-sa"
+            });
+
+            new microEditor("editor2");
+        }
+        </script>
+    </head>
+    <body>
+        <textarea id="editor">Water</textarea>
+
+        <textarea id="editor2">Water</textarea>
+    </body>
+</html>
