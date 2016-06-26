@@ -402,7 +402,7 @@ var microEditor = function (el) {
      * add to toolbar
      */
     toolbar: function (e) {
-      if(this.options.extended)return;
+      if(_self.options.extended)return;
       _self.options.toolbar += ' ' + e
     },
 
