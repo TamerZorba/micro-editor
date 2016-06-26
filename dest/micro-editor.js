@@ -22,7 +22,8 @@ var microEditor = function (el) {
     position: 'top', // toolbar position
     height: 100, // editor height
     debounce: 10, // time to thread update textarea content
-    init: null
+    init: null, // init function to register some attrs or events
+    extended: false, // private check to check if extended
   }
 
   /**
@@ -37,6 +38,7 @@ var microEditor = function (el) {
 
   // extract element from object
   if (el instanceof Object) {
+    this.options.extended = true;
     this.extends(this.options, el)
     el = this.options.el
   }
@@ -400,6 +402,7 @@ var microEditor = function (el) {
      * add to toolbar
      */
     toolbar: function (e) {
+      if(this.options.extended)return;
       _self.options.toolbar += ' ' + e
     },
 
