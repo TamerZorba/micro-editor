@@ -23,7 +23,7 @@ var microEditor = function (el) {
     height: 100, // editor height
     debounce: 10, // time to thread update textarea content
     init: null, // init function to register some attrs or events
-    extended: false, // private check to check if extended
+    extended: {}, // private check to check if extended
   }
 
   /**
@@ -32,13 +32,13 @@ var microEditor = function (el) {
   this.extends = function (obj1, obj2) {
     for (var i in obj2) {
       obj1[i] = obj2[i]
+      this.options.extended[i] = true;
     }
     return obj1
   }
 
   // extract element from object
   if (el instanceof Object) {
-    this.options.extended = true;
     this.extends(this.options, el)
     el = this.options.el
   }
@@ -402,7 +402,7 @@ var microEditor = function (el) {
      * add to toolbar
      */
     toolbar: function (e) {
-      if(_self.options.extended)return;
+      if(_self.options.extended.toolbar)return;
       _self.options.toolbar += ' ' + e
     },
 
@@ -468,6 +468,18 @@ var microEditor = function (el) {
         this.list[idx].push(callback)
       }
     },
+
+    /**
+     * script import
+     */
+    script: function(path, onLoad){
+      var script = document.createElement('script');
+      script.src = path;
+      document.head.appendChild(script);
+      if(onLoad)script.onload = function(){
+        onLoad.call(_self, this);
+      }
+    }
   }
 
   /**
@@ -554,8 +566,19 @@ microEditor.plugins.register('fontName', function () {
       this.register.action('fontName', e)
     })
     .tooltip('Font Name')
-    .menu('Tahoma (Mac Only Font)', 'Tahoma')
+    .menu('Tahoma')
     .menu('Arial')
+    .menu('Comic Sans MS')
+    .menu('Courier New')
+    .menu('Impact')
+    .menu('Times New Roman')
+    .menu('Trebuchet MS')
+    .menu('Verdana')
+    .menu('Symbol')
+    .menu('Helvetica')
+    .menu('Monospace')
+    .menu('Monospace')
+
 }, function () {
   this.register.toolbar('fontName')
 })
