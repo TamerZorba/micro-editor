@@ -4,4 +4,5 @@ microEditor.plugins.register('justifyFull', function () {
   })
     .icon('fa fa-align-justify')
     .highlight('justifyfull')
+    .tooltip('Justify Full')
 })

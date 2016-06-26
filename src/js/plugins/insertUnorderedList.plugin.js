@@ -4,4 +4,5 @@ microEditor.plugins.register('insertUnorderedList', function () {
   })
     .icon('fa fa-list-ul')
     .highlight('insertunorderedlist')
+    .tooltip('Insert Unordered List')
 })

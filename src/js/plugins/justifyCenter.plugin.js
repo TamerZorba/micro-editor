@@ -4,4 +4,5 @@ microEditor.plugins.register('justifyCenter', function () {
   })
     .icon('fa fa-align-center')
     .highlight('justifycenter')
+    .tooltip('Justify Center')
 })

@@ -15,7 +15,7 @@ var microEditor = function (el) {
       'justifyCenter justifyRight justifyFull blockquote indent outdent insertUnorderedList ' +
       'insertOrderedList createlink unlink insertimage subscript superscript removeFormat print', // all the buttons in toolbar
     debugMode: false, // show the original text area
-    pastAsPlain: false, // convert pasted text as plain text
+    pasteAsPlain: false, // convert pasted text as plain text
     preventPaste: false, // prevent user from pasting text
     expandable: false, // expand the editor by style
     showOnFocus: false, // show toolbar only when focus
@@ -66,11 +66,15 @@ var microEditor = function (el) {
    * init Function
    */
   this.init = function () {
-    // TODO : check if rendered
+    // TODO : check if we add another call to the same textarea
+    if (this.el.microEditor)return
+    this.el.microEditor = this
+
     this.prepare()
+    var editor = this.create.editor()
 
     if (this.options.position != 'top') {
-      this.create.editor()
+      editor.render()
     }
 
     // plugins init
@@ -78,22 +82,23 @@ var microEditor = function (el) {
       microEditor.plugins.init[i].call(this)
     }
 
+    this.editor.innerHTML = _self.register.event.triggerAll('setContent', this.el.value)
+
     // plugins hook
     var toolbar = this.options.toolbar.split(' ')
     for (var i in toolbar) {
       if (microEditor.plugins.list[toolbar[i]]) {
         microEditor.plugins.list[toolbar[i]].call(this)
       } else {
-        if (toolbar[i].trim() !== '') console.error(toolbar[i])
+        if (toolbar[i].trim() !== '') console.error('No Plugin Called : ' + toolbar[i])
       }
     }
 
     if (this.options.position == 'top') {
-      this.create.editor()
+      editor.render()
     }
 
     // set the default value from textarea if exist
-    this.editor.innerHTML = this.el.value
     this.register.event.dropdownCloseListener()
   }
 
@@ -153,6 +158,7 @@ var microEditor = function (el) {
             el.classList.remove('highlight')
           }
         })
+        return item
       }
 
       item.parent = function () {
@@ -185,8 +191,14 @@ var microEditor = function (el) {
         item.dropdownContent.appendChild(menu)
         return item
       }
+
       item.modal = function (cb) {
         cb.call(_self, item)
+      }
+
+      item.tooltip = function(e){
+        item.setAttribute("tip", e);
+        return item;
       }
 
       _self.append(div)
@@ -230,31 +242,28 @@ var microEditor = function (el) {
       })
 
       _self.register.threadEvent(item, 'blur keyup paste input focus', function () {
-        _self.el.value = this.innerHTML
+        _self.el.value = _self.register.event.triggerAll('getContent', this.innerHTML)
       }, _self.options.debounce || 10)
 
       _self.el.addEventListener('change', function () { // we may need keyup listener
-        item.innerHTML = _self.el.value
+        item.innerHTML = _self.register.event.triggerAll('setContent', _self.el.value)
       })
 
       if (!_self.options.debugMode) {
         _self.el.style.display = 'none'
       }
 
-      if (_self.options.pastAsPlain) {
-        item.addEventListener('paste', function (e) {
+      item.addEventListener('paste', function (e) {
+        if (_self.options.preventPaste || _self.options.pasteAsPlain) {
           e.preventDefault()
+        }
+
+        if (_self.options.pasteAsPlain) {
           if (_self.options.preventPaste) return
           var text = (e.originalEvent || e).clipboardData.getData('text/plain') || prompt('Paste something..')
           _self.register.action('insertText', text)
-        })
-      }
-
-      if (_self.options.preventPaste) {
-        item.addEventListener('paste', function (e) {
-          e.preventDefault()
-        })
-      }
+        }
+      })
 
       if (!_self.options.expandable) {
         item.style.height = _self.options.height || 100
@@ -290,8 +299,8 @@ var microEditor = function (el) {
           if (!focused && !keep) _self.container.classList.remove('focused')
         })
       }
+      
       // disable buttons when loose focus
-      _self.register.event.disableAllButtons(true)
       item.addEventListener('focus', function (e) {
         _self.register.event.disableAllButtons(false)
       })
@@ -299,7 +308,10 @@ var microEditor = function (el) {
         _self.register.event.disableAllButtons(true)
       })
 
-      _self.append(item)
+      item.render = function () {
+        _self.append(item)
+        _self.register.event.disableAllButtons(true)
+      }
 
       _self.editor = item
       return item
@@ -385,6 +397,9 @@ var microEditor = function (el) {
       _self.options.toolbar += ' ' + e
     },
 
+    /**
+     * update item status by callback
+     */
     update: {
       list: [],
       define: function (item, callback) {
@@ -397,6 +412,9 @@ var microEditor = function (el) {
       }
     },
 
+    /**
+     * global events trigger
+     */
     event: {
       dropdownCloseListener: function () {
         var _self = this
@@ -423,8 +441,24 @@ var microEditor = function (el) {
           var elm = els[i]
           elm.disabled = state
         }
+      },
+
+      list: {
+        'getContent': [],
+        'setContent': [],
+      },
+      triggerAll: function (idx, e) {
+        if (!this.list[idx])return e
+        for (var i in this.list[idx]) {
+          e = this.list[idx][i].call(_self, e)
+        }
+        return e
+      },
+      on: function (idx, callback) {
+        if (!this.list[idx])this.list[idx] = []
+        this.list[idx].push(callback)
       }
-    }
+    },
   }
 
   /**

@@ -4,4 +4,5 @@ microEditor.plugins.register('indent', function () {
   })
     .icon('fa fa-indent')
     .highlight('indent')
+    .tooltip('Indent')
 })

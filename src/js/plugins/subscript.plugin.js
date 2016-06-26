@@ -4,4 +4,5 @@ microEditor.plugins.register('subscript', function () {
   })
     .icon('fa fa-subscript')
     .highlight('subscript')
+    .tooltip('Subscript')
 })

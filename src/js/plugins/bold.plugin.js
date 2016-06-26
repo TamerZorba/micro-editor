@@ -4,4 +4,5 @@ microEditor.plugins.register('bold', function () {
   })
     .icon('fa fa-bold')
     .highlight('bold')
+    .tooltip('Bold')
 })

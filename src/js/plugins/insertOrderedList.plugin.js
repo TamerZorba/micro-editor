@@ -4,4 +4,5 @@ microEditor.plugins.register('insertOrderedList', function () {
   })
     .icon('fa fa-list-ol')
     .highlight('insertorderedlist')
+    .tooltip('Insert Ordered List')
 })

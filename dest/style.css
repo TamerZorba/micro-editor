@@ -94,6 +94,47 @@
         opacity: 1;
     }
     
+    /* tooltip pointer */
+    .microEditor button[tip]:before{
+        transition: all .5s;
+        content:'';
+        display:block;
+        width:0;
+        height:0;
+        position:absolute;
+
+        border-bottom:4px solid transparent;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+        left:9px;
+        bottom:0px;
+        visibility: hidden;
+    }
+    .microEditor button[tip]:hover:before {
+        border-bottom:4px solid black;
+        visibility: visible;
+    }
+    /* tooltip body */
+    .microEditor button[tip]:after {
+        transition: all .5s;
+        content: attr(tip);
+        padding: 4px 8px;
+        position: absolute;
+        left: 0;
+        top: 100%;
+        white-space: nowrap;
+        z-index: 20px;
+        background-color: transparent;
+        color: transparent;
+        border-radius:3px;
+        visibility: hidden;
+    }
+    
+    .microEditor button[tip]:hover:after {
+        background-color: #000;
+        color: #fff;
+        visibility: visible;
+    }
 
     .onfocus .button-container:nth-child(2) button {
         transition-delay: 10ms;

@@ -4,4 +4,5 @@ microEditor.plugins.register('superscript', function () {
   })
     .icon('fa fa-superscript')
     .highlight('superscript')
+    .tooltip('Superscript')
 })

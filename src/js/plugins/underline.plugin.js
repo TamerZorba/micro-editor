@@ -4,4 +4,5 @@ microEditor.plugins.register('underline', function () {
   })
     .icon('fa fa-underline')
     .highlight('underline')
+    .tooltip('Underline')
 })

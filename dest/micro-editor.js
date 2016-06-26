@@ -15,7 +15,7 @@ var microEditor = function (el) {
       'justifyCenter justifyRight justifyFull blockquote indent outdent insertUnorderedList ' +
       'insertOrderedList createlink unlink insertimage subscript superscript removeFormat print', // all the buttons in toolbar
     debugMode: false, // show the original text area
-    pastAsPlain: false, // convert pasted text as plain text
+    pasteAsPlain: false, // convert pasted text as plain text
     preventPaste: false, // prevent user from pasting text
     expandable: false, // expand the editor by style
     showOnFocus: false, // show toolbar only when focus
@@ -66,11 +66,15 @@ var microEditor = function (el) {
    * init Function
    */
   this.init = function () {
-    // TODO : check if rendered
+    // TODO : check if we add another call to the same textarea
+    if (this.el.microEditor)return
+    this.el.microEditor = this
+
     this.prepare()
+    var editor = this.create.editor()
 
     if (this.options.position != 'top') {
-      this.create.editor()
+      editor.render()
     }
 
     // plugins init
@@ -78,22 +82,23 @@ var microEditor = function (el) {
       microEditor.plugins.init[i].call(this)
     }
 
+    this.editor.innerHTML = _self.register.event.triggerAll('setContent', this.el.value)
+
     // plugins hook
     var toolbar = this.options.toolbar.split(' ')
     for (var i in toolbar) {
       if (microEditor.plugins.list[toolbar[i]]) {
         microEditor.plugins.list[toolbar[i]].call(this)
       } else {
-        if (toolbar[i].trim() !== '') console.error(toolbar[i])
+        if (toolbar[i].trim() !== '') console.error('No Plugin Called : ' + toolbar[i])
       }
     }
 
     if (this.options.position == 'top') {
-      this.create.editor()
+      editor.render()
     }
 
     // set the default value from textarea if exist
-    this.editor.innerHTML = this.el.value
     this.register.event.dropdownCloseListener()
   }
 
@@ -153,6 +158,7 @@ var microEditor = function (el) {
             el.classList.remove('highlight')
           }
         })
+        return item
       }
 
       item.parent = function () {
@@ -185,8 +191,14 @@ var microEditor = function (el) {
         item.dropdownContent.appendChild(menu)
         return item
       }
+
       item.modal = function (cb) {
         cb.call(_self, item)
+      }
+
+      item.tooltip = function(e){
+        item.setAttribute("tip", e);
+        return item;
       }
 
       _self.append(div)
@@ -230,31 +242,28 @@ var microEditor = function (el) {
       })
 
       _self.register.threadEvent(item, 'blur keyup paste input focus', function () {
-        _self.el.value = this.innerHTML
+        _self.el.value = _self.register.event.triggerAll('getContent', this.innerHTML)
       }, _self.options.debounce || 10)
 
       _self.el.addEventListener('change', function () { // we may need keyup listener
-        item.innerHTML = _self.el.value
+        item.innerHTML = _self.register.event.triggerAll('setContent', _self.el.value)
       })
 
       if (!_self.options.debugMode) {
         _self.el.style.display = 'none'
       }
 
-      if (_self.options.pastAsPlain) {
-        item.addEventListener('paste', function (e) {
+      item.addEventListener('paste', function (e) {
+        if (_self.options.preventPaste || _self.options.pasteAsPlain) {
           e.preventDefault()
+        }
+
+        if (_self.options.pasteAsPlain) {
           if (_self.options.preventPaste) return
           var text = (e.originalEvent || e).clipboardData.getData('text/plain') || prompt('Paste something..')
           _self.register.action('insertText', text)
-        })
-      }
-
-      if (_self.options.preventPaste) {
-        item.addEventListener('paste', function (e) {
-          e.preventDefault()
-        })
-      }
+        }
+      })
 
       if (!_self.options.expandable) {
         item.style.height = _self.options.height || 100
@@ -290,8 +299,8 @@ var microEditor = function (el) {
           if (!focused && !keep) _self.container.classList.remove('focused')
         })
       }
+      
       // disable buttons when loose focus
-      _self.register.event.disableAllButtons(true)
       item.addEventListener('focus', function (e) {
         _self.register.event.disableAllButtons(false)
       })
@@ -299,7 +308,10 @@ var microEditor = function (el) {
         _self.register.event.disableAllButtons(true)
       })
 
-      _self.append(item)
+      item.render = function () {
+        _self.append(item)
+        _self.register.event.disableAllButtons(true)
+      }
 
       _self.editor = item
       return item
@@ -385,6 +397,9 @@ var microEditor = function (el) {
       _self.options.toolbar += ' ' + e
     },
 
+    /**
+     * update item status by callback
+     */
     update: {
       list: [],
       define: function (item, callback) {
@@ -397,6 +412,9 @@ var microEditor = function (el) {
       }
     },
 
+    /**
+     * global events trigger
+     */
     event: {
       dropdownCloseListener: function () {
         var _self = this
@@ -423,8 +441,24 @@ var microEditor = function (el) {
           var elm = els[i]
           elm.disabled = state
         }
+      },
+
+      list: {
+        'getContent': [],
+        'setContent': [],
+      },
+      triggerAll: function (idx, e) {
+        if (!this.list[idx])return e
+        for (var i in this.list[idx]) {
+          e = this.list[idx][i].call(_self, e)
+        }
+        return e
+      },
+      on: function (idx, callback) {
+        if (!this.list[idx])this.list[idx] = []
+        this.list[idx].push(callback)
       }
-    }
+    },
   }
 
   /**
@@ -482,7 +516,9 @@ microEditor.plugins = {
 microEditor.plugins.register('blockquote', function () {
   this.create.button(function () {
     this.register.action('blockquote')
-  }).icon('fa fa-quote-left')
+  })
+    .icon('fa fa-quote-left')
+    .tooltip('BlockQuote')
 })
 
 microEditor.plugins.register('bold', function () {
@@ -491,12 +527,15 @@ microEditor.plugins.register('bold', function () {
   })
     .icon('fa fa-bold')
     .highlight('bold')
+    .tooltip('Bold')
 })
 
 microEditor.plugins.register('createlink', function () {
   this.create.button(function () {
     this.register.action('createlink')
-  }).icon('fa fa-link')
+  })
+    .icon('fa fa-link')
+    .tooltip('Create Link')
 })
 
 microEditor.plugins.register('fontName', function () {
@@ -505,6 +544,7 @@ microEditor.plugins.register('fontName', function () {
     .dropdown(function (e) {
       this.register.action('fontName', e)
     })
+    .tooltip('Font Name')
     .menu('Tahoma (Mac Only Font)', 'Tahoma')
     .menu('Arial')
 }, function () {
@@ -517,6 +557,7 @@ microEditor.plugins.register('fontSize', function () {
     .dropdown(function (e) {
       this.register.action('fontSize', e)
     })
+    .tooltip('Font Size')
     .menu(1)
     .menu(2)
     .menu(3)
@@ -528,12 +569,13 @@ microEditor.plugins.register('fontSize', function () {
   this.register.toolbar('fontSize')
 })
 
-microEditor.plugins.register('heading', function () {
+microEditor.plugins.register('format', function () {
   this.create.button()
     .icon('fa fa-paragraph')
     .dropdown(function (e) {
       this.register.action(e)
     })
+    .tooltip('Format')
     .menu('DIV', 'div')
     .menu('P', 'p')
     .menu('H1', 'h1')
@@ -543,7 +585,7 @@ microEditor.plugins.register('heading', function () {
     .menu('H5', 'h5')
     .menu('H6', 'h6')
 }, function () {
-  this.register.toolbar('heading')
+  this.register.toolbar('format')
 })
 
 microEditor.plugins.register('indent', function () {
@@ -552,12 +594,15 @@ microEditor.plugins.register('indent', function () {
   })
     .icon('fa fa-indent')
     .highlight('indent')
+    .tooltip('Indent')
 })
 
 microEditor.plugins.register('insertimage', function () {
   this.create.button(function () {
     this.register.action('insertimage')
-  }).icon('fa fa-image')
+  })
+    .icon('fa fa-image')
+    .tooltip('Insert Image')
 })
 
 microEditor.plugins.register('insertOrderedList', function () {
@@ -566,6 +611,7 @@ microEditor.plugins.register('insertOrderedList', function () {
   })
     .icon('fa fa-list-ol')
     .highlight('insertorderedlist')
+    .tooltip('Insert Ordered List')
 })
 
 microEditor.plugins.register('insertUnorderedList', function () {
@@ -574,6 +620,7 @@ microEditor.plugins.register('insertUnorderedList', function () {
   })
     .icon('fa fa-list-ul')
     .highlight('insertunorderedlist')
+    .tooltip('Insert Unordered List')
 })
 
 microEditor.plugins.register('italic', function () {
@@ -582,6 +629,7 @@ microEditor.plugins.register('italic', function () {
   })
     .icon('fa fa-italic')
     .highlight('italic')
+    .tooltip('Italic')
 })
 
 microEditor.plugins.register('justifyCenter', function () {
@@ -590,6 +638,7 @@ microEditor.plugins.register('justifyCenter', function () {
   })
     .icon('fa fa-align-center')
     .highlight('justifycenter')
+    .tooltip('Justify Center')
 })
 
 microEditor.plugins.register('justifyFull', function () {
@@ -598,6 +647,7 @@ microEditor.plugins.register('justifyFull', function () {
   })
     .icon('fa fa-align-justify')
     .highlight('justifyfull')
+    .tooltip('Justify Full')
 })
 
 microEditor.plugins.register('justifyLeft', function () {
@@ -606,6 +656,7 @@ microEditor.plugins.register('justifyLeft', function () {
   })
     .icon('fa fa-align-left')
     .highlight('justifyleft')
+    .tooltip('Justify Left')
 })
 
 microEditor.plugins.register('justifyRight', function () {
@@ -614,6 +665,7 @@ microEditor.plugins.register('justifyRight', function () {
   })
     .icon('fa fa-align-right')
     .highlight('justifyright')
+    .tooltip('Justify Right')
 })
 
 microEditor.plugins.register('outdent', function () {
@@ -622,24 +674,49 @@ microEditor.plugins.register('outdent', function () {
   })
     .icon('fa fa-outdent')
     .highlight('outdent')
+    .tooltip('Outdent')
+})
+
+microEditor.plugins.register('plainmode', function () {
+  this.create.button(function () {
+    console.log(this.options.pasteAsPlain)
+    this.options.pasteAsPlain = !this.options.pasteAsPlain
+  })
+    .icon('fa fa-file-text')
+    .update(function (el) {
+      if (this.options.pasteAsPlain) {
+        el.classList.add('highlight')
+      } else {
+        el.classList.remove('highlight')
+      }
+    })
+    .tooltip('toogle Paste Plain Mode')
+}, function () {
+  this.register.toolbar('plainmode')
 })
 
 microEditor.plugins.register('print', function () {
   this.create.button(function () {
     this.register.action('print')
-  }).icon('fa fa-print')
+  })
+    .icon('fa fa-print')
+    .tooltip('Print')
 })
 
 microEditor.plugins.register('redo', function () {
   this.create.button(function () {
     this.register.action('redo')
-  }).icon('fa fa-repeat')
+  })
+    .icon('fa fa-repeat')
+    .tooltip('Redo')
 })
 
 microEditor.plugins.register('removeFormat', function () {
   this.create.button(function () {
     this.register.action('removeFormat')
-  }).icon('fa fa-eraser')
+  })
+    .icon('fa fa-eraser')
+    .tooltip('Remove Format')
 })
 
 microEditor.plugins.register('strikeThrough', function () {
@@ -648,6 +725,7 @@ microEditor.plugins.register('strikeThrough', function () {
   })
     .icon('fa fa-strikethrough')
     .highlight('strikethrough')
+    .tooltip('StrikeThrough')
 })
 
 microEditor.plugins.register('subscript', function () {
@@ -656,6 +734,7 @@ microEditor.plugins.register('subscript', function () {
   })
     .icon('fa fa-subscript')
     .highlight('subscript')
+    .tooltip('Subscript')
 })
 
 microEditor.plugins.register('superscript', function () {
@@ -664,6 +743,7 @@ microEditor.plugins.register('superscript', function () {
   })
     .icon('fa fa-superscript')
     .highlight('superscript')
+    .tooltip('Superscript')
 })
 
 microEditor.plugins.register('underline', function () {
@@ -672,16 +752,21 @@ microEditor.plugins.register('underline', function () {
   })
     .icon('fa fa-underline')
     .highlight('underline')
+    .tooltip('Underline')
 })
 
 microEditor.plugins.register('undo', function () {
   this.create.button(function () {
     this.register.action('undo')
-  }).icon('fa fa-undo')
+  })
+    .icon('fa fa-undo')
+    .tooltip('Undo')
 })
 
 microEditor.plugins.register('unlink', function () {
   this.create.button(function () {
     this.register.action('unlink')
-  }).icon('fa fa-unlink')
+  })
+    .icon('fa fa-unlink')
+    .tooltip('Unlink')
 })

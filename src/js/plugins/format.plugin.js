@@ -1,9 +1,10 @@
-microEditor.plugins.register('heading', function () {
+microEditor.plugins.register('format', function () {
   this.create.button()
     .icon('fa fa-paragraph')
     .dropdown(function (e) {
       this.register.action(e)
     })
+    .tooltip('Format')
     .menu('DIV', 'div')
     .menu('P', 'p')
     .menu('H1', 'h1')
@@ -13,5 +14,5 @@ microEditor.plugins.register('heading', function () {
     .menu('H5', 'h5')
     .menu('H6', 'h6')
 }, function () {
-  this.register.toolbar('heading')
+  this.register.toolbar('format')
 })

@@ -4,4 +4,5 @@ microEditor.plugins.register('justifyLeft', function () {
   })
     .icon('fa fa-align-left')
     .highlight('justifyleft')
+    .tooltip('Justify Left')
 })

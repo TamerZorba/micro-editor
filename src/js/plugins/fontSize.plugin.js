@@ -4,6 +4,7 @@ microEditor.plugins.register('fontSize', function () {
     .dropdown(function (e) {
       this.register.action('fontSize', e)
     })
+    .tooltip('Font Size')
     .menu(1)
     .menu(2)
     .menu(3)

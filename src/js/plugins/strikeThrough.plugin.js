@@ -4,4 +4,5 @@ microEditor.plugins.register('strikeThrough', function () {
   })
     .icon('fa fa-strikethrough')
     .highlight('strikethrough')
+    .tooltip('StrikeThrough')
 })

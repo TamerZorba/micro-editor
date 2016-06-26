@@ -4,4 +4,5 @@ microEditor.plugins.register('italic', function () {
   })
     .icon('fa fa-italic')
     .highlight('italic')
+    .tooltip('Italic')
 })

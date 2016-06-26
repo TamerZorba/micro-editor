@@ -4,4 +4,5 @@ microEditor.plugins.register('outdent', function () {
   })
     .icon('fa fa-outdent')
     .highlight('outdent')
+    .tooltip('Outdent')
 })

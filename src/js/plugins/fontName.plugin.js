@@ -4,6 +4,7 @@ microEditor.plugins.register('fontName', function () {
     .dropdown(function (e) {
       this.register.action('fontName', e)
     })
+    .tooltip('Font Name')
     .menu('Tahoma (Mac Only Font)', 'Tahoma')
     .menu('Arial')
 }, function () {
