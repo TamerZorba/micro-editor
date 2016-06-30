@@ -101,6 +101,7 @@ var microEditor = function (el) {
       }
     }
 
+    this.register.event.disableAllButtons(true)
     this.register.event.dropdownCloseListener()
   }
 
@@ -312,7 +313,6 @@ var microEditor = function (el) {
 
       item.render = function () {
         _self.append(item)
-        _self.register.event.disableAllButtons(true)
       }
 
       _self.editor = item
@@ -485,6 +485,7 @@ var microEditor = function (el) {
     this.container.classList.add('microEditor-idx' + this.idx)
     this.toolbar = document.createElement('div')
     this.toolbar.classList.add('toolbar')
+    this.toolbar.classList.add(this.options.position)
 
     var idx = this.getIndex()
 
