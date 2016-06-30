@@ -15,9 +15,34 @@
         transition: all .5s;
     }
     
-    .editor:hover,
-    .editor:focus {
+    .microEditor .editor:hover,
+    .microEditor .editor:focus {
         background-color: #fafafa;
+    }
+    
+    .microEditor .toolbar {
+        transition: all .5s;
+    }
+    
+    .microEditor.onfocus .toolbar.top {
+        top: -25px;
+    }
+    
+    .microEditor.onfocus .toolbar.bottom {
+        bottom: -25px;
+    }
+    
+    .microEditor.onfocus .toolbar {
+        background-color: rgba(255, 255, 255, .6);
+        position: absolute;
+        border-radius: 2px;
+        visibility: hidden;
+        opacity: 0;
+    }
+    
+    .microEditor.focused .toolbar {
+        visibility: visible;
+        opacity: 1;
     }
     
     .microEditor .button-container {
@@ -28,12 +53,12 @@
     .microEditor .button-container>.dropdown-content {
         display: none;
         position: absolute;
-        background-color: #f9f9f9;
-        min-width: 70px;
+        background-color: #fff;
+        min-width: 20px;
         overflow: auto;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        border: 1px solid #eee;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, .6);
         z-index: 21;
+        border-radius: 2px;
     }
     
     .microEditor .button-container>.show {
@@ -48,10 +73,11 @@
         font: 11px tahoma;
         cursor: pointer;
         white-space: nowrap;
+        border-radius: 2px;
     }
     
     .microEditor .button-container>.dropdown-content a:hover {
-        background-color: #900;
+        background-color: #077;
         color: white;
     }
     
@@ -93,29 +119,30 @@
     .focused button {
         opacity: 1;
     }
-    
     /* tooltip pointer */
-    .microEditor button[tip]:before{
+    
+    .microEditor button[tip]:not([disabled]):before {
         transition: all .5s;
-        content:'';
-        display:block;
-        width:0;
-        height:0;
-        position:absolute;
-
-        border-bottom:4px solid transparent;
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        border-bottom: 4px solid transparent;
         border-right: 4px solid transparent;
         border-left: 4px solid transparent;
-        left:9px;
-        bottom:0px;
+        left: 9px;
+        bottom: 0px;
         visibility: hidden;
     }
-    .microEditor button[tip]:hover:before {
-        border-bottom:4px solid black;
+    
+    .microEditor button[tip]:not([disabled]):hover:before {
+        border-bottom: 4px solid #077;
         visibility: visible;
     }
     /* tooltip body */
-    .microEditor button[tip]:after {
+    
+    .microEditor button[tip]:not([disabled]):after {
         transition: all .5s;
         content: attr(tip);
         padding: 4px 8px;
@@ -126,12 +153,12 @@
         z-index: 20;
         background-color: transparent;
         color: transparent;
-        border-radius:3px;
+        border-radius: 3px;
         visibility: hidden;
     }
     
-    .microEditor button[tip]:hover:after {
-        background-color: #000;
+    .microEditor button[tip]:not([disabled]):hover:after {
+        background-color: #077;
         color: #fff;
         visibility: visible;
     }

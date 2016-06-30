@@ -7,6 +7,7 @@
  */
 
 var microEditor = function (el) {
+  'use strict'
   var _self = this
 
   this.options = {
@@ -32,7 +33,7 @@ var microEditor = function (el) {
   this.extends = function (obj1, obj2) {
     for (var i in obj2) {
       obj1[i] = obj2[i]
-      this.options.extended[i] = true;
+      this.options.extended[i] = true
     }
     return obj1
   }
@@ -74,15 +75,12 @@ var microEditor = function (el) {
     this.el.microEditor = this
 
     this.prepare()
-    var editor = this.create.editor()
-
-    if (this.options.position != 'top') {
-      editor.render()
-    }
+    this.create.editor()
+    this.editor.render()
 
     // init
-    if(this.options.init){
-      this.options.init.call(this);
+    if (this.options.init) {
+      this.options.init.call(this)
     }
 
     // plugins init
@@ -90,6 +88,7 @@ var microEditor = function (el) {
       microEditor.plugins.init[i].call(this)
     }
 
+    // set the default value from textarea if exist    
     this.editor.innerHTML = _self.register.event.triggerAll('setContent', this.el.value)
 
     // plugins hook
@@ -102,11 +101,7 @@ var microEditor = function (el) {
       }
     }
 
-    if (this.options.position == 'top') {
-      editor.render()
-    }
-
-    // set the default value from textarea if exist
+    this.register.event.disableAllButtons(true)
     this.register.event.dropdownCloseListener()
   }
 
@@ -204,12 +199,12 @@ var microEditor = function (el) {
         cb.call(_self, item)
       }
 
-      item.tooltip = function(e){
-        item.setAttribute("tip", e);
-        return item;
+      item.tooltip = function (e) {
+        item.setAttribute('tip', e)
+        return item
       }
 
-      _self.append(div)
+      _self.append(div, true)
       return item
     },
 
@@ -232,7 +227,7 @@ var microEditor = function (el) {
       item.icon = function (e) {
         item.innerHTML = "<i class='" + e + "'></i>"
       }
-      _self.append(item)
+      _self.append(item, true)
       return item
     },
 
@@ -249,7 +244,7 @@ var microEditor = function (el) {
         _self.register.update.triggerAll()
       })
 
-      _self.register.threadEvent(item, 'blur keyup paste input focus', function () {
+      _self.register.threadEvent(item, 'blur keyup paste input focus change input', function () {
         _self.el.value = _self.register.event.triggerAll('getContent', this.innerHTML)
       }, _self.options.debounce || 10)
 
@@ -307,7 +302,7 @@ var microEditor = function (el) {
           if (!focused && !keep) _self.container.classList.remove('focused')
         })
       }
-      
+
       // disable buttons when loose focus
       item.addEventListener('focus', function (e) {
         _self.register.event.disableAllButtons(false)
@@ -318,7 +313,6 @@ var microEditor = function (el) {
 
       item.render = function () {
         _self.append(item)
-        _self.register.event.disableAllButtons(true)
       }
 
       _self.editor = item
@@ -353,7 +347,7 @@ var microEditor = function (el) {
       } else if (command == 'print') {
         this.doPrint()
       } else if (command == 'createlink' || command == 'insertimage') {
-        url = prompt('Enter the link here: ', 'http:\/\/')
+        var url = prompt('Enter the link here: ', 'http:\/\/')
         document.execCommand(command, false, url)
       } else {
         document.execCommand(command, false, value)
@@ -402,7 +396,7 @@ var microEditor = function (el) {
      * add to toolbar
      */
     toolbar: function (e) {
-      if(_self.options.extended.toolbar)return;
+      if (_self.options.extended.toolbar)return
       _self.options.toolbar += ' ' + e
     },
 
@@ -472,12 +466,12 @@ var microEditor = function (el) {
     /**
      * script import
      */
-    script: function(path, onLoad){
-      var script = document.createElement('script');
-      script.src = path;
-      document.head.appendChild(script);
-      if(onLoad)script.onload = function(){
-        onLoad.call(_self, this);
+    script: function (path, onLoad) {
+      var script = document.createElement('script')
+      script.src = path
+      document.head.appendChild(script)
+      if (onLoad)script.onload = function () {
+          onLoad.call(_self, this)
       }
     }
   }
@@ -489,17 +483,29 @@ var microEditor = function (el) {
     this.container = document.createElement('div')
     this.container.classList.add('microEditor')
     this.container.classList.add('microEditor-idx' + this.idx)
+    this.toolbar = document.createElement('div')
+    this.toolbar.classList.add('toolbar')
+    this.toolbar.classList.add(this.options.position)
+
     var idx = this.getIndex()
+
+    this.container.appendChild(this.toolbar)
     this.el.parentNode.insertBefore(this.container, this.el.parentNode.childNodes[idx])
   }
 
   /**
    * append Function
    */
-  this.append = function (elm) {
-    this.container.appendChild(elm)
-  // var idx = this.getIndex()
-  // this.el.parentNode.insertBefore(elm, this.el.parentNode.childNodes[idx])
+  this.append = function (elm, toolbar) {
+    if (!toolbar) {
+      if (this.options.position == 'top') {
+        this.container.appendChild(elm)
+      } else {
+        this.container.insertBefore(elm, this.toolbar)
+      }
+    } else {
+      this.toolbar.appendChild(elm)
+    }
   }
 
   /**
@@ -576,7 +582,6 @@ microEditor.plugins.register('fontName', function () {
     .menu('Verdana')
     .menu('Symbol')
     .menu('Helvetica')
-    .menu('Monospace')
     .menu('Monospace')
 
 }, function () {
