@@ -16,7 +16,6 @@ microEditor.plugins.register('fontName', function () {
     .menu('Symbol')
     .menu('Helvetica')
     .menu('Monospace')
-    .menu('Monospace')
 
 }, function () {
   this.register.toolbar('fontName')
