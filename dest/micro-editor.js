@@ -275,11 +275,11 @@ var microEditor = function (el) {
       })
 
       if (!_self.options.expandable) {
-        item.style.height = _self.options.height || 100
+        item.style.height = (_self.options.height || 100) + "px";
         item.style.overflow = 'auto'
       }else{
         if(_self.options.extended.height){
-          item.style.minHeight = _self.options.height
+          item.style.minHeight = _self.options.height + "px"
         }
       }
 
@@ -537,6 +537,15 @@ var microEditor = function (el) {
       ++k
     }
     return k
+  }
+
+  /**
+   * setContent
+   */
+  this.setContent = function(content){
+      _self.el.value = content;
+        this.editor.innerHTML = _self.register.event.triggerAll('setContent', content)
+        // this.el.value = _self.register.event.triggerAll('getContent', content);
   }
 
   /**
