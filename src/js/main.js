@@ -104,7 +104,7 @@ var microEditor = function (el) {
 
     this.register.event.disableAllButtons(true)
     this.register.event.dropdownCloseListener()
-    
+
     // complete
     if (this.options.complete) {
       this.options.complete.call(this)
@@ -275,11 +275,11 @@ var microEditor = function (el) {
       })
 
       if (!_self.options.expandable) {
-        item.style.height = (_self.options.height || 100) + "px";
+        item.style.height = (_self.options.height || 100) + 'px'
         item.style.overflow = 'auto'
-      }else{
-        if(_self.options.extended.height){
-          item.style.minHeight = _self.options.height + "px"
+      } else {
+        if (_self.options.extended.height) {
+          item.style.minHeight = _self.options.height + 'px'
         }
       }
 
@@ -287,14 +287,6 @@ var microEditor = function (el) {
         var focused = false
         var keep = false
 
-        if(_self.options.position == "top"){
-          _self.toolbar.style.top = -(_self.toolbar.style.offsetHeight);
-          _self.toolbar.style.bottom = "auto";
-        }else{
-          _self.toolbar.style.bottom = -(_self.toolbar.style.offsetHeight);
-          _self.toolbar.style.top = "auto";
-        }
-        
         _self.container.classList.add('onfocus')
         _self.container.addEventListener('mouseover', function () {
           _self.container.classList.add('focused')
@@ -319,6 +311,18 @@ var microEditor = function (el) {
         })
         item.addEventListener('mouseout', function (e) {
           if (!focused && !keep) _self.container.classList.remove('focused')
+        })
+
+        // wait to render
+        setTimeout(function () {
+          var height = parseInt(window.getComputedStyle(_self.toolbar).height)
+          if (_self.options.position == 'top') {
+            _self.toolbar.style.top = (-height) + 'px'
+            _self.toolbar.style.bottom = 'auto'
+          } else {
+            _self.toolbar.style.bottom = (-height) + 'px'
+            _self.toolbar.style.top = 'auto'
+          }
         })
       }
 
@@ -542,10 +546,9 @@ var microEditor = function (el) {
   /**
    * setContent
    */
-  this.setContent = function(content){
-      _self.el.value = content;
-        this.editor.innerHTML = _self.register.event.triggerAll('setContent', content)
-        // this.el.value = _self.register.event.triggerAll('getContent', content);
+  this.setContent = function (content) {
+    _self.el.value = content
+    this.editor.innerHTML = _self.register.event.triggerAll('setContent', content)
   }
 
   /**
