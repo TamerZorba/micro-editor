@@ -24,6 +24,7 @@ var microEditor = function (el) {
     height: 100, // editor height
     debounce: 10, // time to thread update textarea content
     init: null, // init function to register some attrs or events
+    complete: null, // complete render function
     extended: {}, // private check to check if extended
   }
 
@@ -103,6 +104,11 @@ var microEditor = function (el) {
 
     this.register.event.disableAllButtons(true)
     this.register.event.dropdownCloseListener()
+    
+    // complete
+    if (this.options.complete) {
+      this.options.complete.call(this)
+    }
   }
 
   /**
@@ -271,11 +277,24 @@ var microEditor = function (el) {
       if (!_self.options.expandable) {
         item.style.height = _self.options.height || 100
         item.style.overflow = 'auto'
+      }else{
+        if(_self.options.extended.height){
+          item.style.minHeight = _self.options.height
+        }
       }
 
       if (_self.options.showOnFocus) {
         var focused = false
         var keep = false
+
+        if(_self.options.position == "top"){
+          _self.toolbar.style.top = -(_self.toolbar.style.offsetHeight);
+          _self.toolbar.style.bottom = "auto";
+        }else{
+          _self.toolbar.style.bottom = -(_self.toolbar.style.offsetHeight);
+          _self.toolbar.style.top = "auto";
+        }
+        
         _self.container.classList.add('onfocus')
         _self.container.addEventListener('mouseover', function () {
           _self.container.classList.add('focused')

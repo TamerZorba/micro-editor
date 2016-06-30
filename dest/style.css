@@ -93,6 +93,10 @@
         transition: all .5s;
     }
     
+    .microEditor button i {
+        font-size: 12px;
+    }
+    
     .microEditor button:hover {
         border-top-color: #ccc;
         border-bottom-color: #ccc;
